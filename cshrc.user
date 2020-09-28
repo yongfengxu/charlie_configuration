@@ -26,12 +26,14 @@ alias mm ~/projs/bin/meld
 alias ccmake ~/projs/bin/cmake
 alias lg /lab/epg_ft_utils/logviewer/logviewer.sh
 alias ww /lab/j20/testtools/binaries/rhel6.x86_64/onewireshark/bin/wireshark
-alias p5g git push origin HEAD:refs/for/prototype/5g_poc_phase3
-alias p2b git push origin HEAD:refs/for/prototype/wp390_281
+alias p2v git push origin HEAD:refs/for/dev/ismf2
+#alias p2b git push origin HEAD:refs/for/prototype/wp390_281
 alias p2m git push origin HEAD:refs/for/master
-alias lncc ln -s build/Linux_x86_64/compile_commands.json compile_commands.json
+alias lncc 'rm compile_commands.json; cp build/Linux_x86_64/compile_commands.json ~/; ln -s ~/compile_commands.json compile_commands.json'
+#alias lncc ln -s build/Linux_x86_64/compile_commands.json compile_commands.json
 alias get_maintainer /proj/epg/tools/bin/get_maintainer.py
-alias jj jenkins_job build_all -n vipp,test -t -l "TTCN-BASIC-EVRTD_cups,TTCN-EXTENDED-EVRTD_cups,TTCN-CUPS_T2_BASIC-EVRTD_cups"
+#alias jj jenkins_job build_all -n vipp,test -t -l "TTCN-BASIC-EVRTD_cups,TTCN-EXTENDED-EVRTD_cups,TTCN-CUPS_T2_BASIC-EVRTD_cups"
+alias jj jenkins_job build_all -g -n test
 
 setenv ASAN_OPTIONS detect_stack_use_after_scope=0
 
@@ -63,9 +65,9 @@ module load meld/1.8.4
 module rm pygtk/2.24.0-2.7
 #============================
 
-setenv PKG_CONFIG_PATH /home/elmpprv/projs/bin/
-#setenv PYTHONPATH /home/elmpprv/projs/lib/python3.6/site-packages/
-setenv PYTHONPATH ~/projs/lib/python2.7/site-packages/
+#setenv PKG_CONFIG_PATH /home/elmpprv/projs/:$PKG_CONFIG_PATH/
+#setenv PYTHONPATH /home/elmpprv/projs/lib/python2.6/site-packages/
+#setenv PYTHONPATH ~/projs/lib/python2.7/site-packages/
 setenv GRAPHVIZ_DOT ~/projs/bin/dot
 
 setenv EPG_GDB /repo/elmpprv/epg_gdb/epg_gdb.py
@@ -75,3 +77,6 @@ setenv EPG_GDB /repo/elmpprv/epg_gdb/epg_gdb.py
 alias epg cd /repo/elmpprv/epg
 alias sw setup_workspace
 alias jp java -jar /home/elmpprv/plantuml.jar -graphvizdot ~/projs/bin/dot
+
+alias blib build lib\!:1_Linux_x86_64.so
+alias bliba build lib\!:1_Linux_x86_64.a

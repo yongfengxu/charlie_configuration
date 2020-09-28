@@ -30,7 +30,7 @@ values."
    dotspacemacs-configuration-layer-path '()
    ;; List of configuration layers to load.
    dotspacemacs-configuration-layers
-   '(
+   '(csv
      yaml
      python
      ;; ----------------------------------------------------------------
@@ -147,12 +147,11 @@ values."
    dotspacemacs-colorize-cursor-according-to-state t
    ;; Default font, or prioritized list of fonts. `powerline-scale' allows to
    ;; quickly tweak the mode-line size to make separators look not too crappy.
-   ;;dotspacemacs-default-font '("Source Code Pro"
-   dotspacemacs-default-font '("Courier New"
-                               :size 13
+   dotspacemacs-default-font '("Source Code Pro"
+                               :size 15
                                :weight normal
                                :width normal
-                               :powerline-scale 1.1)
+                               :powerline-scale 2)
    ;; The leader key
    dotspacemacs-leader-key "SPC"
    ;; The key used for Emacs commands (M-x) (after pressing on the leader key).
@@ -346,7 +345,9 @@ you should place your code here."
   ;;lsp layer
   (require 'lsp)
   (setq ccls-executable "/home/elmpprv/projs/bin/ccls")
-  (setq ccls-args '("--init={\"cache\":{\"directory\":\"/repo/elmpprv/.ccls-cache\",\"format\":\"binary\",\"hierarchicalPath\":false,\"retainInMemory\":2}, \"index\":{\"threads\": 4 , \"initialWhitelist\":[\"/repo/elmpprv/epg/application/\", \"/repo/elmpprv/epg/framework\", \"/home/elmpprv/opensource/libev-4.27/\"]}}"))
+  (setq ccls-args '("--init={\"cache\":{\"directory\":\"/repo/elmpprv/.ccls-cache\",\"format\":\"binary\",\"retainInMemory\":2}}"))
+  ;;(setq ccls-args '("--init={\"cache\":{\"directory\":\"/repo/elmpprv/.ccls-cache\",\"format\":\"binary\",\"hierarchicalPath\":false,\"retainInMemory\":2}, \"index\":{ \"initialWhitelist\":[\"/repo/elmpprv/epg/application/PgwControlPlane\", \"/repo/elmpprv/epg/framework\", \"/home/elmpprv/opensource/libev-4.27/\"]}}"))
+  ;;(setq ccls-args '("--init={\"cache\":{\"directory\":\"/repo/elmpprv/.ccls-cache\",\"format\":\"binary\",\"hierarchicalPath\":false,\"retainInMemory\":2}, \"index\":{\"threads\": 4 , \"initialWhitelist\":[\"/repo/elmpprv/epg/application/\", \"/repo/elmpprv/epg/framework\", \"/home/elmpprv/opensource/libev-4.27/\"]}}"))
   ;;(setq ccls-args '("--init={\"cache\":{\"directory\":\"/repo/elmpprv/.ccls-cache\",\"format\":\"binary\",\"hierarchicalPath\":false,\"retainInMemory\":2}, \"index\":{\"initialBlacklist\": [\".\"],\"threads\": 2 , \"initialWhitelist\":[\"/repo/elmpprv/epg/application/\", \"/repo/elmpprv/epg/framework\"]}}"))
   ;;(setq ccls-args '("--init={\"cache\":{\"directory\":\"/repo/elmpprv/.ccls-cache\",\"format\":\"binary\",\"hierarchicalPath\":false,\"retainInMemory\":2}, \"index\":{\"initialWhitelist\":[\"/repo/elmpprv/epg/application/\", \"/repo/elmpprv/epg/framework\"]}}"))
   ;;(setq ccls-args '("--init={\"cache\":{\"directory\":\"/repo/elmpprv/.ccls-cache\",\"format\":\"binary\",\"hierarchicalPath\":false,\"retainInMemory\":2},\"compilationDatabaseDirectory\":\"/repo/elmpprv/epg/compile_commands.json\", \"index\":{\"threads\": 2 , \"initialWhitelist\":[\"/repo/elmpprv/epg/application/\", \"/repo/elmpprv/epg/framework\"]}}"))

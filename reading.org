@@ -1,0 +1,651 @@
+* Org Learning                                                      :PROJECT:
+***** TODO Agenda
+****** DONE agenda files
+       CLOSED: [2018-07-04 Wed 15:52]
+      | hotkey    | org-command                        | Effect                                                            |
+      |-----------+------------------------------------+-------------------------------------------------------------------|
+      | C-c [     | org-agenda-file-to-front           | Add current file to the list of agenda files                      |
+      | C-c ]     | org-remove-file                    | Remove current file from the list of agenda files                 |
+      | C-'       | org-cycle-agenda-files             | Cycle through agenda file list, visiting one file after the other |
+      | C-c C-x < | org-agenda-set-restriction-lock    | Permanently restrict the agenda to the current sub tree           |
+      | C-c C-x > | org-agenda-remove-restriction-lock | Remove the permanently restriction create by C-c C-x <            |
+    
+****** DONE agenda dispatcher
+       CLOSED: [2018-07-04 Wed 15:52]
+       The views are created through a dispatcher.
+      | hotkey | org-command | Effect                       |
+      |--------+-------------+------------------------------|
+      | C-c a  | org-agenda  | access the agenda dispatcher |
+    
+      The dispatcher offers the following default commands:
+     | hotkey | Effect                                                                                                                           |
+     |--------+----------------------------------------------------------------------------------------------------------------------------------|
+     | a      | Create the calendar-like agenda                                                                                                  |
+     | t / T  | Create a list of all TODO items                                                                                                  |
+     | m / M  | Create a list of headlines matching a TAGS expression                                                                            |
+     | s      | Create a list of entries                                                                                                         |
+     | /      | Search for a regular expression in all agenda files and additionally in the files listed in org-agenda-text-search-extra-files   |
+     | # / !  | Create a list of stuck projects                                                                                                  |
+     | <      | Restrict an agenda command to the current buffer                                                                                 |
+     | < <    | If there is an active region, restrict the following agenda command to the region.Otherwise, restrict it to the current subtree. |
+     | *      | Toggle sticky agena views.                                                                                                       |
+  
+****** DONE built-in agenda views
+       CLOSED: [2018-07-04 Wed 15:52]
+******* weekly/daily agenda
+     
+******* global TODO list
+******* matching tags and properties
+        Match syntax
+       | keyword             | Effect                                                                     |
+       |---------------------+----------------------------------------------------------------------------|
+       | 'work'              | Select headlines tagged ':work:'.                                          |
+       | 'work&boss'         | Select headlines tagged ':work:' and ':boss:'                              |
+       | '+work-boss'        | Select headlines tagged ':work:', but discard those also tagged ':boss:'.  |
+       | 'work\laptop'       | Selects lines tagged ':work:' or ':laptop:'                                |
+       | 'work\laptop+night' | Like before, but require the ':laptop:' lines to be tagged also ':night:'. |
+     
+       note: replace '\' with '|'
+******* Search view 
+******* stuck projects
+        identify projects with a tag PROJECT
+
+****** TODO presentation and sorting
+****** TODO commands in agenda views
+******* Calendar commands
+      | hotkey | org-command              | Effect                                                                                 |
+      |--------+--------------------------+----------------------------------------------------------------------------------------|
+      | c      | org-agenda-goto-calendar | Open the Emacs calendar and move to the date at the agenda cursor                      |
+      | c      | org-agenda-goto-calendar | When in the calendar, compute and show the Org mode agenda for the data at the cursor. |
+      |        |                          |                                                                                        |
+****** TODO custom agenda views
+****** TODO exporting agenda views
+****** TODO using column view in the agenda
+***** TODO TODO items
+   
+* Practical Vim[28%]                                              :read_book:
+** TODO The Vim Way [100%]
+*** DONE Tips1. Meet the Dot Command
+    CLOSED: [2018-11-22 Thu 15:56]
+    The dot command lets us repeat the last change.
+    It is the most powerful and versatile command in Vim.
+    To understand the power of the dot command, we have to realize that the "last change" could be one of many things.
+    A change could act at the level of individual characters, entire lines, or even the whole file.
+    The dot command is a micro macro.
+    
+  | Command | Effect                                                            |
+  |---------+-------------------------------------------------------------------|
+  | >G      | increase the indentation from the current line to the end of file |
+  | >2G     | increase the indentation of next 2 lines from the current line    |
+  | <G      | decrease the indentation from the current line to the end of file |
+  | <5G     | decrease the indentation of next 5 lines from the current line    |
+
+*** DONE Tips2. Don't Repeat Yourself
+    CLOSED: [2018-11-22 Thu 15:56]
+    Table. Two for the Price of One
+  | Compound Command | Equivalent in longhand |
+  |------------------+------------------------|
+  | C                | c$                     |
+  | s                | cl                     |
+  | S                | ^C                     |
+  | I                | ^i                     |
+  | A                | $a                     |
+  | o                | A<CR>                  |
+  | O                | ko                     |
+
+  They all switch from Normal to Insert mode.
+  
+*** DONE Tips3. Take One Step Back, Then Three Forward
+    CLOSED: [2018-11-22 Thu 15:56]
+    1. Make the Change Repeatable
+       for example, use s␣+␣<Esc>  
+    2. Make the Motion Repeatable
+       for example, use f+
+
+    The ; command takes us to our next target, and the . command repeats the last change.
+    
+    Example
+   | Keystrokes | Buffer Contents                                          |
+   |------------+----------------------------------------------------------|
+   | {start}    | var foo = "method("+argument1+","+argument2+")";         |
+   | f+         | var foo = "method("+argument1+","+argument2+")";         |
+   | s␣+␣<Esc>  | var foo = "method(" + argument1+","+argument2+")";       |
+   | ;          | var foo = "method(" + argument1+","+argument2+")";       |
+   | .          | var foo = "method(" + argument1 + ","+argument2+")";     |
+   | ;.         | var foo = "method(" + argument1 + "," + argument2+")";   |
+   | ;.         | var foo = "method(" + argument1 + "," + argument2 + ")"; |
+*** DONE Tips4. Act, Repeat, Reverse
+    CLOSED: [2018-11-22 Thu 15:58]
+    When facing a repetitive task, we can achieve an optimal editing strategy by making both the motion and the change repeatable. Vim has a knack for this. It remembers our actions and keeps the most common ones within close reach so that we can easily replay them.
+    
+  Table. Repeatable Actions and How to Reverse Them 
+  | Intent                           | Act                   | Repeat | Reverse |
+  | Make a change                    | {edit}                | .      | u       |
+  | Scan line for next character     | f{char}/t{char}       | ;      | ,       |
+  | Scan line for previous character | F{char}/T{char}       | ;      | ,       |
+  | Scan document for next match     | /pattern<CR> or *     | n      | N       |
+  | Scan document for previous match | ?pattern<CR> or #     | n      | N       |
+  | Perform substitution             | :s/target/replacement | &      | u       |
+  | Execute a sequence of changes    | qx{changes}q          | @x     | u       |
+  | Execute a command                | :%normal I123         | @:     | u       |
+  
+  ',' can't work in spacemacs due to key-mapping conflict, "c-h k ;" 
+  
+*** DONE Tips5. Find and Replace by Hand
+    CLOSED: [2018-11-22 Thu 16:09]
+    :substitute command for find-and-replace tasks
+
+    :%s/content/copy/g
+    :%s/content/copy
+    
+    use '&' cant repeat it
+    
+*** DONE Tips6. Meet the Dot Formula
+    CLOSED: [2018-11-22 Thu 16:22]
+    The Ideal: One Keystroke to Move(;), One Keystroke to Execute(.)
+    
+** TODO [#A] Mode[0%]
+   
+*** Normal Mode 
+**** DONE Tips7. Pause with Your Bursh Off the Page
+     CLOSED: [2018-12-13 Thu 14:59]
+     For those unused to Vim, Normal mode can seem like an odd default. But experienced Vim users have difficulty imagining it any other way. This tip uses an analogy to illustrate the Vim way.
+    How much time do you reckon artists spend with their paint brushes in contact with the canvas? No doubt it would vary from artist to artist, but I’d be surprised if it counted for as much as half of the time painters spend at work.
+    Think of all of the things that painters do besides paint. They study their subject, adjust the lighting, and mix paints into new hues. And when it comes to applying paint to the canvas, who says they have to use brushes? A painter might switch to a palette knife to achieve a different texture or use a cotton swab to touch up the paint that’s already been applied.
+    The painter does not rest with a brush on the canvas. And so it is with Vim. Normal mode is the natural resting state. The clue is in the name, really.
+    Just as painters spend a fraction of their time applying paint, programmers spend a fraction of their time composing code. More time is spent thinking, reading, and navigating from one part of a codebase to another. And when we do want to make a change, who says we have to switch to Insert mode? We can reformat existing code, duplicate it, move it around, or delete it. From Normal mode, we have many tools at our disposal.
+    
+**** DONE Tips8. Chunk Your Undos
+     CLOSED: [2018-12-13 Thu 14:59]
+     In other text editors, invoking the undo command after typing a few words might revert the last typed word or character. However, in Vim we can control the granularity of the undo command.
+    The u key triggers the undo command, which reverts the most recent change. A change could be anything that modifies the text in the document. That includes commands triggered from Normal, Visual, and Command-Line modes, but a change could also encompass any text entered (or deleted) in Insert mode. So we could also say that i{insert some text}<Esc> constitutes a change.
+    In nonmodal text editors, triggering the undo command after typing a few words could do one of two things. It could undo the last character that was typed. Or, more helpfully, it could chunk a set of characters together so that each undo operation removed a word instead of a character.
+    In Vim, we can control the granularity of the undo command. From the moment we enter Insert mode until we return to Normal mode, everything we type (or delete) counts as a single change. So we can make the undo command operate on words, sentences, or paragraphs just by moderating our use of the <Esc> key.
+    So how often should you leave Insert mode? It’s a matter of preference, but I like to make each “undoable chunk” correspond to a thought. As I write this text (in Vim, of course!), I often pause at the end of a sentence to consider what I’ll write next. No matter how brief its duration, each pause forms a natural break point, giving me a cue to leave Insert mode. When I’m ready to continue writing, I press A and carry on where I left off.
+    If I decide that I’ve taken a wrong turn, I’ll switch to Normal mode and press u. Each time I undo, my text decomposes in coherent chunks that correspond to my thought process as I was writing the original text. It means that I can easily try out a sentence or two and then throw them away with a couple of keystrokes.
+    If I’m in Insert mode with my cursor at the end of a line, the quickest way to open a new line is to press <CR>. And yet I sometimes prefer to press <Esc>o just because I anticipate that I might want that extra granularity from the undo command. If this sounds hard core, don’t worry. As you become adept with Vim, switching modes feels more and more lightweight.
+    As a general rule, if you’ve paused for long enough to ask the question, “Should I leave Insert mode?” then do it.
+    
+**** DONE Tips9. Compose Repeatable Changes
+     CLOSED: [2018-12-13 Thu 14:59]
+     Vim is optimized for repetition. In order to exploit this, we have to be mindful of how we compose our changes.
+     In Vim, we always have more than one way of doing something. In evaluating which way is best, the most obvious metric is efficiency: which technique requires the fewest keystrokes (a.k.a. VimGolf1). But how should we pick a winner in the event of a tie? Suppose that our cursor is positioned on the “h” at the end of this line of text, and we want to delete the word “nigh.”
+     The end is nigh
+     choice1. dbx 
+     choice2. bdw
+     choice3. daw
+     
+    The backward deletion technique involves two operations: db deletes to the start of the word and then x deletes a single character. If we invoke the dot command, it repeats the single character deletion (. == x). That’s not what I would call a big win.
+The forward deletion technique also involves two steps. This time, b is just a plain motion, while dw makes a change. The dot command repeats dw, deleting from the cursor position to the beginning of the next word. It so happens that we’re already at the end of the line. There is no “next word,” so in this context the dot command isn’t useful. But at least it’s shorthand for something longer (. == dw).
+
+The final solution only invokes a single operation: daw. This technique doesn’t just remove the word, it also deletes a whitespace character. As a result, our cursor ends up on the last character of the word “is.” If we invoke the dot command, it will repeat the instruction to delete a word. This time, the dot command does something truly useful (. == daw). 
+     
+    The daw technique invests the most power into the dot command, so I declare it the winner of this round. 
+    Making effective use of the dot command often requires some forethought. If you notice that you have to make the same small change in a handful of places, you can attempt to compose your changes in such a way that they can be repeated with the dot command. Recognizing those opportunities takes practice. But if you develop a habit of making your changes repeatable wherever possible, then Vim will reward you for it. 
+    Sometimes, I won’t see an opportunity to use the dot command. After making a change—and finding that I need to perform an identical edit—I realize that the dot command is primed and ready to do the work for me. It makes me grin every time.
+**** DONE Tips10. Use Counts to Do Simple Arithmetic
+     CLOSED: [2018-12-13 Thu 16:54]
+     The <C-a> and <C-x> commands perform addition and subtraction on numbers. When run without a count they increment by one, but if we prefix a number, then we can add or subtract by any whole number. For example, if we positioned our cursor on a 5 character, running 10<C-a> would modify it to read 15.
+     
+     Note: <C-a> and <C-x> are mapping-conflict in spacemacs.
+
+**** DONE Tips11. Don't Count if You Can Repeat
+     CLOSED: [2018-12-13 Thu 17:03]
+     That same argument also goes in favor of counting (d5w) over repeating (dw....), so my preferences may seem inconsistent here. You’ll develop your own opinion on this, depending on how much you value keeping your undo history clean and whether or not you find it tiresome to use counts.
+     
+**** DONE Tips12. Combine and Conquer
+     CLOSED: [2018-12-13 Thu 17:47]
+     Much of Vim’s power stems from the way that operators and motions can be combined. In this tip, we’ll look at how this works and consider the implications.
+     
+     Operator + Motion = Action
+     The d{motion} command can operate on a single character (dl), a complete word (daw), or an entire paragraph (dap). Its reach is defined by the motion. The same goes for c{motion}, y{motion}, and a handful of others. Collectively, these commands are called operators.
+     The g~, gu, and gU commands are invoked by two keystrokes. In each case, we can consider the g to be a prefix that modifies the behavior of the subsequent keystroke.
+     
+     Table. Vim’s Operator Commands
+      | Trigger | Effect                                            |
+      |---------+---------------------------------------------------|
+      | k       | Change                                            |
+      | d       | Delete                                            |
+      | y       | Yank into register                                |
+      | g~      | Swap case                                         |
+      | gu      | Make lowercase                                    |
+      | gU      | Make uppercase                                    |
+      | ~       | Swap case one letter                              |
+      | vU      | uppercase the letter under the cursor             |
+      | >       | Shift right                                       |
+      | <       | Shift left                                        |
+      | =       | Autoindent                                        |
+      | !       | Filter {motion} lines through an external program |
+     
+      Vim’s grammar has just one more rule: when an operator command is invoked in duplicate, it acts upon the current line. So dd deletes the current line, while >> indents it. The gU command is a special case. We can make it act upon the current line by running either gUgU or the shorthand gUU. 
+      
+**** TODO Meet Operator-Pending Mode
+     Normal, Insert, and Visual modes are readily identified, but Vim has other modes that are easy to overlook. Operator-Pending mode is a case in point. We use it dozens of times daily, but it usually lasts for just a fraction of a second. For example, we invoke it when we run the command dw . It lasts during the brief interval between pressing d and w keys. Blink and you’ll miss it!
+     If we think of Vim as a finite-state machine, then Operator-Pending mode is a state that accepts only motion commands. It is activated when we invoke an operator command, and then nothing happens until we provide a motion, which completes the operation. While Operator-Pending mode is active, we can return to Normal mode in the usual manner by pressing escape, which aborts the operation. Many commands are invoked by two or more keystrokes (for examples, look up :h g , :h z , :h ctrl-w , or :h [ ), but in most cases, the first keystroke merely acts as a prefix for the second. These commands don’t initiate Operator-Pending mode. Instead, we can think of them as namespaces that expand the number of available command mappings. Only the operator commands initiate Operator-Pending mode.
+     Why, you might be wondering, is an entire mode dedicated to those brief moments between invoking operator and motion commands, whereas the namespaced commands are merely an extension of Normal mode? Good question! Because we can create custom mappings that initiate or target Operator-Pending mode. In other words, it allows us to create custom operators and motions, which in turn allows us to expand Vim’s vocabulary.
+*** Insert Mode
+**** TODO Tip 13. Make Corrections Instantly from Insert Mode 
+**** TODO Tip 14. Get Back to Normal Mode 
+**** TODO Tip 15. Paste from a Register Without Leaving Insert Mode 
+**** TODO Tip 16. Do Back-of-the-Envelope Calculations in Place 
+**** TODO Tip 17. Insert Unusual Characters by Character Code 
+**** TODO Tip 18. Insert Unusual Characters by Digraph 
+**** TODO Tip 19. Overwrite Existing Text with Replace Mode 
+     
+*** Visual Mode
+**** TODO Tip 20. Grok Visual Mode 
+**** TODO Tip 21. Define a Visual Selection
+     | Command | Effect                              |
+     |---------+-------------------------------------|
+     | V       | Enable line-wise Visual mode        |
+     | v       | Enable character-wise Visual mode   |
+     | <C-v>   | Enable block-wise Visual mode       |
+     | gv      | Re-select the last visual selection |
+**** TODO Tip 22. Repeat Line-Wise Visual Commands 
+**** TODO Tip 23. Prefer Operators to Visual Commands Where Possible 
+**** TODO Tip 24. Edit Tabular Data with Visual-Block Mode 
+**** TODO Tip 25. Change Columns of Text 
+**** TODO Tip 26. Append After a Ragged Visual Block
+    
+*** Command-line Mode
+**** TODO Tip 27. Meet Vim's Command Line
+     | Command                                       | Effect                                                                          |
+     |-----------------------------------------------+---------------------------------------------------------------------------------|
+     | :[range]delete [x]                            | Delete specified lines [into register x]                                        |
+     | :[range]yank [x]                              | Yank specified lines [into register x]                                          |
+     | :[line]put [x]                                | Put the text from register x after the specified line                           |
+     | :[range]copy {address}                        | Copy the specified lines to below the line specified by {address}               |
+     | :[range]move {address}                        | Move the specified lines to below the line specified by {address}               |
+     | :[range]join                                  | Join the specified lines                                                        |
+     | :[range]normal {commands}                     | Execute Normal mode {commands} on each specified line                           |
+     | :[range]substitute/{pattern}/{string}/[flags] | Replace occurrences of {pattern} with {string} on each specified line           |
+     | :[range]global/{pattern}/[cmd]                | Execute the Ex command [cmd] on all specified lines where the {pattern} matches |
+     
+**** TODO Tip 28. Execute a Command on One or More Consecutive Lines 
+**** TODO Tip 29. Duplicate or Move Lines Using ‘:t’ and ‘:m’ Commands 
+**** TODO Tip 30. Run Normal Mode Commands Across a Range
+      If we want to run a Normal mode command on a series of consecutive lines, we can do so using the :normal command. When used in combination with the dot command or a macro, we can perform repetitive tasks with very little effort.
+      The :'<,'>normal . command can be read as follow: "For each line in the visual selection, execute the Normal mode . command."
+      11,12nornaml A; instructs Vim add ; at the end of line 11 to line 12.
+      The % symbol is used as a range representing the entire file. So :%normal A; instructs Vim to append a semicolon at the end of every line of the file.
+      It's most powerful when used in combination with one of Vim's repeat commands: either :normal . for simple repeats or :normal @q for more complex tasks.
+     
+**** TODO Tip 31. Repeat the Last Ex Command 
+**** TODO Tip 32. Tab-Complete Your Ex Commands 
+**** TODO Tip 33. Insert the Current Word at the Command Prompt 
+**** TODO Tip 34. Recall Commands from History 
+**** TODO Tip 35. Run Commands in the Shell 
+**** TODO Tip 36. Run Multiple Ex Commands as a Batch 
+** TODO Files [0%]
+*** TODO Manage multiple files
+*** TODO Open files and save them to disk
+** DONE [#B] Getting around faster[100%]
+   CLOSED: [2019-02-01 Fri 13:46]
+*** DONE Navigate inside files with motions
+    CLOSED: [2018-06-26 Tue 16:21]
+**** Tip47 Keep Your Fingers on the Home Row
+    | Command | Move cursor      |
+    |---------+------------------|
+    | h       | One column left  |
+    | j       | One line down    |
+    | k       | One line up      |
+    | l       | One column right |
+     
+**** Tip48 Distinguish Between Real Lines and Display Lines
+    | Command | Move cursor                        |
+    |---------+------------------------------------|
+    | j       | Down one real line                 |
+    | gj      | Down one display line              |
+    | 0       | To first character of real line    |
+    | g0      | To first character of display line |
+    | $       | To end of real line                |
+    | g$      | To end of display line             |
+    
+**** Tip49 Move Word-Wise
+    | Command | Move Cursor                                |
+    |---------+--------------------------------------------|
+    | w       | Forward to start of next word              |
+    | b       | Backward to start of cuttent/previous word |
+    | e       | Forward to end of current/next word        |
+    | ge      | Backward to end of previous word           |
+    | W       | Forward to start of next WORD              |
+    | B       | Backward to start of cuttent/previous WORD |
+    | E       | Forward to end of current/next WORD        |
+    | GE      | Backward to end of previous WORD           |
+    
+**** Tip50 Find by Character
+    | Command | Move Cursor                                                       |
+    |---------+-------------------------------------------------------------------|
+    | f{char} | Forward to the next occurrence of {char}                          |
+    | F{char} | Backward to the previous occurrence of {char}                     |
+    | t{char} | Forward to the character before the next occurrence of {char}     |
+    | T{char} | Backward to the character after the previous occurrence of {char} |
+    | ;       | Repeat the last character-search command                          |
+    | ,       | Reverse the last character-search command                         |
+    
+**** Tip51 Search to Navigate
+    | Command    | Move Cursor                |
+    |------------+----------------------------|
+    | /takes<CR> | search the takes word      |
+    | n          | Repeat the previous search |
+    | N          | Back up again              |
+    
+    We can use the search command in Normal mode, Visual and Operation-Pending modes.
+    v/ge<CR> Visual mode
+    d/ge<CR> to tell the d{motion} command what to delete
+
+**** Tip52 Trace Your Selection with Precision Text Objects
+    we can use text objects in Visual mode and in Operator-Pending mode.
+    Remember this: whenever you see {motion} as part of the syntax for a command,
+    you can also use a text object.
+    | Text Object | Selection                  | Text Object | Selection                  |
+    |-------------+----------------------------+-------------+----------------------------|
+    | a) or ab    | A pair of (parentheses)    | i) or ib    | Inside of (parentheses)    |
+    | a} or aB    | A pair of {braces}         | i} or iB    | Inside of {braces}         |
+    | a]          | A pair of [brackets]       | i]          | Inside of [brackets]       |
+    | a>          | A pair of <angle brackets> | i>          | Inside of <angle brackets> |
+    | a’          | A pair of 'single quotes'  | i’          | Inside of 'single quotes'  |
+    | a"          | A pair of "double quotes"  | i"          | Inside of "double quotes"  |
+    | a`          | A pair of `backticks`      | i`          | Inside of `backticks`      |
+    | at          | A pair of <xml>tags</xml>  | it          | Inside of <xml>tags</xml>  |
+    
+**** Tip53 Delete Around, or Change Inside
+     As a general rule, we could say that the d{motion} command tends to work well with
+     aw, as, and ap, whereas the c{motion} command works better with iw and similar.
+    | Keystrokes | Current…  | Keystrokes | Current…                     |
+    |------------+-----------+------------+------------------------------|
+    | iw         | word      | aw         | word plus space(s)           |
+    | iW         | WORD      | aW         | WORD plus space(s)           |
+    | is         | sentence  | as         | sentence plus space(s)       |
+    | ip         | paragraph | ap         | paragraph plus blank line(s) |
+    
+**** Tip54 Mark Your Place and Snap Back to It
+    The m{a-zA-Z} command marks the current cursor location with the designated letter   
+    Vim provides two Normal mode commands for jumping to a mark. (Pay attention—they look similar!) 
+    The ’{mark} moves to the line where a mark was set, positioning the cursor on the first non-whitespace character.
+    The `{mark} command moves the cursor to the exact position where a mark was set, restoring the line and the column at once
+    
+    Vim's Automatic Marks
+    | Keystrokes | Buffer Contents                                   |
+    |------------+---------------------------------------------------|
+    | ``         | Position before the last jump within current file |
+    | `.         | Location of last change                           |
+    | `^         | Location of last insertion                        |
+    | `[         | Start of last change or yank                      |
+    | `]         | End of last change or yank                        |
+    | `<         | Start of last visual selection                    |
+    | `>         | End of last visual selection                      |
+    
+**** Tip55 Jump Between Matching Parentheses
+     The % command lets us jump between opening and closing sets of parentheses (see :h % ). |
+     It works with (), {}, and [].|
+     |   |
+     |   |
+*** DONE Navigate between files with jumps|
+    CLOSED: [2018-07-04 Wed 09:41] DEADLINE: <2018-07-06 Fri> SCHEDULED: <2018-07-03 Tue>|
+**** Tip56 Traverse the Jump List|
+     | Command                       | Effect                                         |
+     |-------------------------------+------------------------------------------------|
+     | [count]G                      | Jump to line number                            |
+     | /pattern<CR> or /?pattern<CR> | Jump to next/previous occurrence of pattern    |
+     | %                             | Jump to matching parenthesis                   |
+     | ( or )                        | Jump to start of previous/next sentence        |
+     | { or }                        | Jump to start of previous/next paragraph       |
+     | H or M or L                   | Jump to top/middle/bottom of screen            |
+     | gf                            | Jump to file name under the cursor             |
+     | <C-]>                         | Jump to definition of keyword under the cursor |
+     | ’{mark}/`{mark}               | Jump to a mark                                 |
+     
+     We can inspect the contents of the jump list by running this command: :jumps
+     
+**** Tip57 Traverse the Change List
+     We can inspect the contents of the change list by running this command: :changes
+     A plug-in named undo-tree
+     
+    | Command | Effect                    |
+    |---------+---------------------------|
+    | g;      | go to last change         |
+    | g,      | go to last change reverse |
+     
+**** [#C] Tip58 Jump to the Filename Under the Cursor
+     The ‘suffixesadd’ option allows us to specify one or more file extensions, which Vim will attempt to use when looking up a filename with the gf command
+     :set suffixesadd+=.rb
+     
+     gf 
+     
+     My comment: some other plug-in can be used to find file
+     
+**** Tip59 Snap Between Files Using Global Marks
+     The m{letter} command allows us to create a mark at the current cursor position (:h m ).
+     Lowercase letters create marks that are local to a buffer.
+     Uppercase letters create global marks.
+     Having set a mark, we can snap our cursor back to it with the `{letter} command (:h ` ).
+** DONE [#B] Registers[100%]
+   CLOSED: [2019-02-01 Fri 13:46]
+*** DONE [#A] Copy and paste
+    CLOSED: [2018-07-09 Mon 13:33] DEADLINE: <2018-07-09 Mon>
+**** Tip60.Delete, Yank, and Put with Vim's Unnamed Register
+     The xp command can be considered as "Transpose the next two characters".
+     We can hit the P key to paste the contents of our unnamed register in from of the cursor.
+     
+     Transpose in Emacs
+    | Hot key | Command              | Equivalent Command in Vim |
+    |---------+----------------------+---------------------------|
+    | C-t     | transpose-chars      | xp                        |
+    | M-t     | transpose-words      | N/A                       |
+    | C-x C-t | transpose-lines      | ddp                       |
+    |         | transpose-sentences  | N/A                       |
+    |         | transpose-paragraphs | N/A                       |
+
+**** Tip61.Grok Vim's Registers
+     We can specify which register we want to use by prefixing the command with "{register}.
+     If we don't specify a register, then Vim will use the unnamed register.
+
+    | Command   | Effect                                            |
+    |-----------+---------------------------------------------------|
+    | "ayiw     | yank the current word into register a             |
+    | "ap       | paste the word from register a                    |
+    | <C-r>a    | paste the word from register a in the Insert mode |
+    | "byy      | cut the current line into register b              |
+    | "bp       | paste the line from register b                    |
+    | :delete c | cut the current line into register c              |
+    | :put c    | paste it below the current line                   |
+     
+    The yank register "0
+    When we use the y{motion} command, the specified text is copied not only into the unnamed register but also into the yank register, which is addressed by the 0 symbol.
+    
+    The Named Registers("a-"z)
+    Vim has one named register for each letter of the alphabet (see :h quote_alpha ).
+    That means that we can cut ( "ad{motion}), copy ( "ay{motion}), or paste ( "ap) up to twenty-six pieces of text.
+    When we address a named register with a lowercase letter, it overwrites the specified register, whereas when we use an uppercase letter, it appends to the specified register.
+    
+    The Black Hole Register ("_)
+    The black hole register is a place from which nothing returns.This can be useful if we want to delete text without overwriting the contents of the unnamed register.
+    
+    The System Clipboard ("+) and Selection ("*) Registers
+    | Keystrokes | Buffer Contents                                   |
+    |------------+---------------------------------------------------|
+    | "+         | The X11 clipboard, used with cut, copy, and paste |
+    | "*         | The X11 primary, used with middle mouse button    |
+
+   The Expression Register ("=) 
+    | Keystrokes     | Buffer Contents                          |
+    |----------------+------------------------------------------|
+    | A              | 6 chairs, each costing $35, totals $     |
+    | <C-r>=6*35<CR> | 6 chairs, each costing $35, totals $210  |
+
+    
+   note: valid in vim, not in spacemacs right now
+   example: Tip16 Tip96 Tip 95 Tip71
+
+   More Registers
+    | Register | Contents                   |
+    |----------+----------------------------|
+    | "%       | Name of the current file   |
+    | "#       | Name of the alternate file |
+    | ".       | Last inserted text         |
+    | ":       | Last Ex command            |
+    | "/       | Last search pattern        |
+    
+
+    How to show the list of register?
+     :reg
+    
+**** Tip62.Replace a Visual selection with a register
+
+     tips: gv to reselect the last visual selection
+     
+     For this particular problem, this is my favorite solution. We can get away with using the unnamed register for both the yank and put operations because there’s no delete step. Instead, we combine the delete and put operations into a single step that replaces the selection.
+     
+**** Tip63.Paste from a Register
+     The p command puts the text from a register after the cursor position (:h p ).
+     As a complement, Vim also provides the (uppercase) P command, which inserts text before the cursor position.
+     Paste character-wise regions of text from Insert mode using the <C-r>{register} mapping rather than using the Normal mode p and P commands.
+     
+     From Insert mode, we can insert the contents of the unnamed register by pressing <C-r>", or we can insert the contents of the yank register by pressing <C-r>0
+     
+     The p and P commands are great for pasting multiline regions of text. But for short sections of character-wise text, the <C-r>{register} mapping can be more intuitive.
+     
+**** Tip64.Interact with the System Clipboard
+    I think it's helpless in spacemacs
+
+*** DONE [#C] Macros
+    CLOSED: [2019-02-01 Fri 13:46]
+    
+    Macros allow us to record a sequence of changes and then play them back.
+    
+**** Tip65.Record and Excute a Macro
+     The q key functions both as the “record” button and the “stop” button. To begin recording our keystrokes, we type q{register}, giving the address of the register where we want to save the macro.
+     The @{register} command executes the contents of the specified register (see :h @ ). We can also use @@, which repeats the macro that was invoked most recently.
+     
+     Execute the Macro in Parallel
+     
+**** Tip66.Normalize, Strike, Abort
+     The golden rule is this: when recording a macro, ensure that every command is repeatable.
+***** Normalize the cursor position
+     As soon as you start recording a macro, ask yourself these questions: where am I, where have I come from, and where am I going? Before you do anything, make sure your cursor is positioned so that the next command does what you expect, where you expect it.
+     That might mean moving the cursor to the next search match (n) or the start of the current line (0) or perhaps the first line of the current file (gg). Always starting on square one makes it easier to strike the right target every time.
+     
+***** Strike Your Target with a Repeatable Motion
+      Navigate by search. Use text objects. Exploit the full arsenal of Vim’s motions to make your macros as flexible and repeatable as you can. Don’t forget: when recording a macro, using the mouse is verboten!
+      
+***** Abort When a Motion Fails
+      If a motion fails while a macro is executing, then Vim aborts the rest of the macro. Consider this a feature, not a bug. We can use motions as a simple test of whether or not the macro should be executed in the current context.
+      Consider this example: We start by searching for a pattern. Let’s say that the document has ten matches. We start recording a macro using the n command to repeat the last search. With our cursor positioned on a match, we make some small change to the text and stop recording the macro. The result of our edit is that this particular region of text no longer matches our search pattern. Now the document has only nine matches.
+      Suppose that the macro was stored in the a register. Rather than executing @a ten times, we could prefix it with a count: 10@a.
+      
+**** Tip67.Play Back with a Count
+     The Dot Formula can be an efficient editing strategy for a small number of repeats, but it can’t be executed with a count. Overcome this limitation by recording a cheap one-off macro and playing it back with a count.
+     
+     No one want to sit here and count the exact number of times that a macro should be executed. So recommaned to use 22. On the keyboard, the @ and 2 characters are entered with the same button.
+     
+**** Tip68.Repeat a Change on Contiguous Lines
+     We can make light work out of repeating the same set of changes on a range of lines by recording a macro and then playing it back on each line. There are two ways to do this: executing the macro in series or in parallel. As a demonstration, we’ll transform this snippet of text:
+     
+     In Series: just like run 22@@ 
+     In parallel: run :normal @a on the selected text.
+     
+    The :normal @a command tells Vim to execute the macro once for each line in the selection. Just as before, the macro succeeds on the first two lines and then aborts on line three, but it doesn’t stall there this time—it completes the job. Why?
+    Previously, we queued up five repetitions in series by running 5@a. When the third iteration aborted, it killed the remaining items in the queue. This time, we’ve lined up five iterations in parallel. Each invocation of the macro is independent from the others. So when the third iteration fails, it does so in isolation.
+
+***** Deciding: Series or Parallel
+      Which is better, series or parallel? The answer (as always): it depends.
+      Executing a macro on multiple items in parallel is more robust. In this scenario, it’s the better solution. But if we raise an error when we execute a macro, maybe we want those alarms to go off. Executing a macro on multiple items in series makes it clear when and where any errors occur.
+      Learn both techniques, and you’ll develop a knack for knowing which one is right for the occasion.
+
+**** Tip69.Append Commands to a Macro
+     Example: add command at the end of macro "a"
+     :reg a
+     "a 0f.r)w~
+
+     qA jq
+
+     :reg a
+     "a 0f.r)w~j
+     
+     Discussion:
+      This little trick saves us from having to re-record the entire macro from scratch. But we can use it only to tack commands on at the end of a macro. If we wanted to add something at the beginning or somewhere in the middle of a macro, this technique would be of no use to us. In Tip 72,Edit the Contents of a Macro, on page 180, we’ll learn about a more powerful method for amending a macro after it has been recorded.
+
+**** Tip70.Act Upon a Collection of Files
+     study it later
+
+**** Tip71.Evaluate an Iterator to Number Items in a List
+    Recommand use emacs style
+    <C-c> r N default start from 0
+    
+    if you want to use another number, try following commands
+    (SPC u or M-m u) <C-c> r N
+
+**** Tip72.Edit the Contents of a Macro
+     study it later
+     
+** TODO [#A] Patterns[0%]
+*** TODO Matching patterns and literals
+**** TODO Tune the Case Sensitivity of Search Patterns
+     Setting Case Sensitivity Globally
+     We can make Vim’s search patterns case insensitive by enabling the ‘ignorecase’ setting:
+     ➾ :set ignorecase
+     
+     Setting Case Sensitivity per Search
+    We can override Vim’s default case sensitivity using the \c and \C items. Lowercase \c causes the search pattern to ignore case, while the uppercase \C item forces case sensitivity. If either of these items is used in a search pattern, the value of ‘ignorecase’ is overridden for that search.
+    Note that these items can be used anywhere in a pattern. If you realize that you need a case sensitive search after you typed out the full pattern, just tack \C on at the end and it will apply to the entire pattern.
+
+    | Pattern | ‘ignorecase’ | ‘smartcase’ | Matches     |
+    | foo     | off          | -           | foo         |
+    | foo     | on           | -           | foo Foo FOO |
+    | foo     | on           | on          | foo Foo FOO |
+    | Foo     | on           | on          | Foo         |
+    | Foo     | on           | off         | foo Foo FOO |
+    | \cfoo   | -            | -           | foo Foo FOO |
+    | foo\C   | -            | -           | foo         |
+
+**** TODO Use the \v Pattern Switch for Regex Searches
+**** TODO Use the \V Literal Switch for Verbatim Searches
+**** TODO Use Parentheses to Capture Submatches
+**** TODO Stake the Boundaries of a Word
+**** TODO Stake the Boundaries of a Match
+**** TODO Escape Problem Characters
+     
+*** TODO Search [0%]
+**** TODO Meet the Search Command 
+**** TODO Highlight Search Matches
+**** TODO Preview the First Match Before Execution
+     
+     enable: set incsearch
+     origin vim: <C-r><C-w> will autocomplete the search field using the remainder of the current preview match
+     spacemacs: <C-r><C-w> search the word of cursor on
+
+**** TODO Offset the Cursor to the End of a Search Match
+     For example:
+	   /lang/e<CR>, which places the cursor at the end of the search match, exactly where we need it.
+     we could simply run //e<CR>. When we leave the search field blank like this, Vim reuses the pattern from the previous search. So this repeats the last search but with an offset.
+     
+**** TODO Operate on a Complete Search Match  
+**** TODO Create Complex Patterns by Iterating upon Search History
+**** TODO Count the Matches for the Current Pattern
+**** TODO Search for the Current Visual Selection
+
+*** TODO Substitution [0%]
+**** TODO Meet the Substitute Command
+**** TODO Find and Replace Every Match in a File
+**** TODO Eyeball Each Substitution
+**** TODO Reuse the Last Search Pattern
+**** TODO Replace with the Contents of a Register
+**** TODO Repeat the Previous Substitute Command
+**** TODO Rearrange CSV Fields Using Submatches
+**** TODO Perform Arithmetic on the Replacement
+**** TODO Swap Two or More Words
+**** TODO Find and Replace Across Multiple Files
+
+*** TODO Global commands [0%]
+**** TODO Find and Replace Across Multiple Files
+**** TODO Delete Lines Containing a Pattern
+**** TODO Collect TODO Items in a Register
+**** TODO Alphabetize the Properties of Each Rule in a CSS File
+** TODO [#B] Tools[0%]
+*** TODO Index and navigate source code with ctags
+*** TODO compile code and navigate errors with the quickfix list
+*** TODO search project-wide with grep, vimgrep, and others
+*** TODO Dial X for autocompletion
+
+   
